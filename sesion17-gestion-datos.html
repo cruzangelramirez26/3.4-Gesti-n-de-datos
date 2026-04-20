@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Sesión 17 — Gestión de Datos · EGEL Plus</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#f4f6f9;--card:#fff;--card2:#f0f2f6;--border:#dde1ea;
+  --text:#374151;--text2:#6b7280;--white:#111827;
+  --green:#16a34a;--green2:#15803d;--greenBg:rgba(22,163,74,.08);
+  --red:#dc2626;--red2:#b91c1c;--redBg:rgba(220,38,38,.08);
+  --blue:#2563eb;--blueBg:rgba(37,99,235,.08);
+  --amber:#d97706;--amberBg:rgba(217,119,6,.1);
+  --purple:#7c3aed;--purpleBg:rgba(124,58,237,.08);
+  --teal:#0d9488;--tealBg:rgba(13,148,136,.08);
+  --orange:#ea580c;--orangeBg:rgba(234,88,12,.08);
+  --pink:#db2777;--pinkBg:rgba(219,39,119,.08);
+  --nav-bg:rgba(244,246,249,.97);
+  --opt-hover:#f8fffe;--scrollbar:#c9d0dc;--track:#e5e7eb;
+  --row-hover:rgba(0,0,0,.02);
+}
+body.dark{
+  --bg:#0a0c10;--card:#12151e;--card2:#181c28;--border:#1e2436;
+  --text:#c8cdd8;--text2:#7c8494;--white:#e8ecf4;
+  --green:#22c55e;--green2:#15803d;--greenBg:rgba(34,197,94,.08);
+  --red:#ef4444;--red2:#b91c1c;--redBg:rgba(239,68,68,.08);
+  --blue:#3b82f6;--blueBg:rgba(59,130,246,.08);
+  --amber:#f59e0b;--amberBg:rgba(245,158,11,.08);
+  --purple:#a78bfa;--purpleBg:rgba(167,139,250,.08);
+  --teal:#14b8a6;--tealBg:rgba(20,184,166,.08);
+  --orange:#f97316;--orangeBg:rgba(249,115,22,.08);
+  --pink:#ec4899;--pinkBg:rgba(236,72,153,.08);
+  --nav-bg:rgba(10,12,16,.95);
+  --opt-hover:#1a1f30;--scrollbar:#2a3040;--track:#1a1f2e;
+  --row-hover:rgba(255,255,255,.015);
+}
+body.dark .hdr{background:linear-gradient(135deg,#111422,#141e2e 50%,#121a2a);}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;line-height:1.7;min-height:100vh}
+::selection{background:var(--teal);color:#fff}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-thumb{background:var(--scrollbar);border-radius:3px}
+.topnav{background:var(--nav-bg);border-bottom:1px solid var(--border);padding:11px 18px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;backdrop-filter:blur(12px)}
+.nav-brand{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--teal);text-transform:uppercase}
+.nav-tabs{display:flex;gap:4px}
+.ntab{padding:7px 14px;border-radius:8px;border:1px solid transparent;background:transparent;color:var(--text2);font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;cursor:pointer;transition:all .2s}
+.ntab.active{background:var(--teal);color:#fff;border-color:var(--teal)}
+.ntab:hover:not(.active){background:var(--card2);border-color:var(--border);color:var(--white)}
+.shell{max-width:920px;margin:0 auto;padding:20px 14px 80px}
+.hdr{background:linear-gradient(135deg,#e8f4f2,#dff0f8 50%,#e4eeff);border:1px solid var(--border);transition:background .3s;border-radius:16px;padding:26px 24px;margin-bottom:20px;position:relative;overflow:hidden}
+.hdr::after{content:'';position:absolute;top:-60px;right:-60px;width:200px;height:200px;background:radial-gradient(circle,rgba(13,148,136,.07),transparent 70%);pointer-events:none}
+.hdr .tag{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2.5px;color:var(--text2);margin-bottom:6px;text-transform:uppercase}
+.hdr h1{font-size:20px;font-weight:700;color:var(--white);margin-bottom:4px}
+.hdr p{font-size:12.5px;color:var(--text2)}
+.hidden{display:none!important}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.page{animation:fadeUp .3s ease both}
+.btn{padding:10px 20px;border-radius:9px;border:none;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s}
+.btn-primary{background:var(--teal);color:#fff}.btn-primary:hover{background:#0f766e}
+.btn-ghost{background:transparent;border:1px solid var(--border);color:var(--text2)}.btn-ghost:hover{border-color:var(--teal);color:var(--white)}
+.node{border-radius:12px;border:1px solid var(--border);overflow:hidden;margin-bottom:8px}
+.node-head{display:flex;align-items:center;gap:12px;padding:14px 18px;cursor:pointer;user-select:none;transition:background .2s}
+.node-head:hover{background:var(--row-hover)}
+.node-icon{font-size:18px;min-width:28px;text-align:center}
+.node-title{font-size:15px;font-weight:700;color:var(--white)}
+.node-sub{font-size:11px;color:var(--text2);margin-top:2px}
+.node-arrow{font-size:11px;color:var(--text2);margin-left:auto;transition:transform .25s}
+.node.open .node-arrow{transform:rotate(90deg)}
+.node-body{display:none;padding:0 18px 16px}
+.node.open .node-body{display:block;animation:fadeUp .2s ease both}
+.node.sql .node-head{background:rgba(37,99,235,.05)}.node.sql{border-color:rgba(37,99,235,.25)}.node.sql .node-title{color:#1d4ed8}
+.node.acid .node-head{background:rgba(124,58,237,.05)}.node.acid{border-color:rgba(124,58,237,.25)}.node.acid .node-title{color:#6d28d9}
+.node.tipos .node-head{background:rgba(234,88,12,.05)}.node.tipos{border-color:rgba(234,88,12,.25)}.node.tipos .node-title{color:#c2410c}
+.node.nosql .node-head{background:rgba(13,148,136,.05)}.node.nosql{border-color:rgba(13,148,136,.25)}.node.nosql .node-title{color:#0f766e}
+.node.dist .node-head{background:rgba(219,39,119,.05)}.node.dist{border-color:rgba(219,39,119,.25)}.node.dist .node-title{color:#be185d}
+.child{background:var(--card2);border:1px solid var(--border);border-radius:9px;padding:10px 14px;margin-top:6px;cursor:pointer;overflow:hidden;transition:all .2s}
+.child:hover{border-color:var(--teal)}
+.child-head{display:flex;align-items:center;gap:8px}
+.child-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.child-name{font-size:13px;font-weight:600;color:var(--white)}
+.child-tag{font-family:'DM Mono',monospace;font-size:10px;color:var(--text2);margin-left:auto;padding-right:4px}
+.child-arrow{font-size:11px;color:var(--text2);transition:transform .2s}
+.child.open .child-arrow{transform:rotate(90deg)}
+.child-body{display:none;margin-top:8px;padding-top:8px;border-top:1px solid var(--border);font-size:12.5px;color:var(--text);line-height:1.75}
+.child.open .child-body{display:block}
+.child-body strong{color:var(--white)}
+.tip{background:var(--amberBg);border:1px solid rgba(217,119,6,.2);border-radius:7px;padding:9px 12px;margin-top:8px;font-size:12px}
+.tip strong{color:var(--amber)}
+.ex{background:var(--tealBg);border:1px solid rgba(13,148,136,.2);border-radius:7px;padding:9px 12px;margin-top:6px;font-size:12px}
+.ex strong{color:var(--teal)}
+.code{background:#1e2433;border-radius:7px;padding:10px 14px;margin-top:8px;font-family:'DM Mono',monospace;font-size:11.5px;color:#c8d3e8;line-height:1.7;overflow-x:auto}
+.code .c{color:#6b7a99}.code .k{color:#7dd3fc}.code .s{color:#86efac}.code .f{color:#fbbf24}.code .n{color:#e2e8f0}
+.vs-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:8px}
+.vs-box{background:var(--bg);border:1px solid var(--border);border-radius:7px;padding:9px 12px;font-size:12px}
+.vs-box h4{font-size:11px;font-weight:700;margin-bottom:4px;font-family:'DM Mono',monospace;letter-spacing:.5px}
+.d-conn{display:flex;align-items:center;gap:8px;padding:2px 22px;margin:4px 0}
+.d-conn-line{flex:1;height:1px;background:linear-gradient(90deg,transparent,var(--border),transparent)}
+.d-conn-txt{font-family:'DM Mono',monospace;font-size:10px;color:var(--text2)}
+@media(max-width:560px){.vs-grid{grid-template-columns:1fr}}
+.comp-tabs{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:14px}
+.ctab{padding:7px 14px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--text2);font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;cursor:pointer;transition:all .2s}
+.ctab.active{background:var(--purple);color:#fff;border-color:var(--purple)}
+.ctab:hover:not(.active){border-color:var(--teal);color:var(--white)}
+.comp-wrap{background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:12px;animation:fadeUp .3s ease both}
+.comp-wrap table{width:100%;border-collapse:collapse}
+.comp-wrap th{background:var(--card2);padding:10px 14px;text-align:left;font-size:12px;font-weight:600;color:var(--white);border-bottom:1px solid var(--border)}
+.comp-wrap th:first-child{width:22%;font-family:'DM Mono',monospace;font-size:10.5px;color:var(--text2)}
+.comp-wrap td{padding:9px 14px;font-size:12.5px;border-bottom:1px solid var(--border);color:var(--text);vertical-align:top;line-height:1.6}
+.comp-wrap tr:last-child td{border-bottom:none}
+.comp-wrap td:first-child{font-weight:600;color:var(--teal);font-size:12px}
+.comp-wrap tr:hover td{background:var(--row-hover)}
+.flash-wrap{max-width:600px;margin:0 auto}
+.flash-progress{display:flex;gap:3px;margin-bottom:16px;flex-wrap:wrap}
+.fp-dot{width:10px;height:10px;border-radius:50%;background:var(--border);transition:background .3s}
+.fp-dot.done{background:var(--teal)}.fp-dot.cur{background:var(--amber)}
+.flash-card{background:var(--card);border:1.5px solid var(--border);border-radius:18px;min-height:210px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:28px;cursor:pointer;transition:all .3s;position:relative;overflow:hidden;text-align:center}
+.flash-card:hover{border-color:var(--teal);transform:translateY(-2px)}
+.flash-card::after{content:'TAP para voltear';position:absolute;bottom:12px;right:16px;font-family:'DM Mono',monospace;font-size:10px;color:var(--text2);letter-spacing:1px}
+.flash-cat{font-family:'DM Mono',monospace;font-size:10px;padding:3px 8px;border-radius:4px;margin-bottom:8px;display:inline-block}
+.flash-emoji{font-size:30px;margin-bottom:10px}
+.flash-q{font-size:15px;font-weight:600;color:var(--white);line-height:1.55}
+.flash-ans{animation:fadeUp .25s ease}
+.flash-ans .ans-title{font-size:16px;font-weight:700;color:var(--teal);margin-bottom:8px}
+.flash-ans .ans-body{font-size:12.5px;color:var(--text);line-height:1.7}
+.flash-ans .ans-key{font-family:'DM Mono',monospace;font-size:11px;color:var(--amber);margin-top:8px}
+.flash-nav{display:flex;align-items:center;justify-content:space-between;margin-top:14px}
+.flash-ctr{font-family:'DM Mono',monospace;font-size:12px;color:var(--text2)}
+.flash-filter{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:14px}
+.ff-btn{padding:5px 12px;border-radius:6px;border:1px solid var(--border);background:transparent;color:var(--text2);font-size:11.5px;cursor:pointer;transition:all .2s;font-family:'DM Sans',sans-serif}
+.ff-btn.active{border-color:var(--teal);color:var(--teal);background:var(--tealBg)}
+.pbar{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:13px 18px;margin-bottom:16px;display:flex;align-items:center;gap:14px}
+.pbar .track{flex:1;height:6px;background:var(--track);border-radius:3px;overflow:hidden}
+.pbar .fill{height:100%;background:linear-gradient(90deg,var(--teal),#2563eb);border-radius:3px;transition:width .4s ease}
+.pbar .label{font-family:'DM Mono',monospace;font-size:12px;color:var(--text2);white-space:nowrap}
+.qcard{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:24px;margin-bottom:14px;animation:fadeUp .35s ease both}
+.qnum{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:1.5px;color:var(--teal);margin-bottom:8px}
+.qtxt{font-size:14px;color:var(--white);font-weight:500;line-height:1.75;margin-bottom:8px;white-space:pre-line}
+.qcode{background:#1e2433;border-radius:8px;padding:12px 16px;margin-bottom:12px;font-family:'DM Mono',monospace;font-size:12px;color:#c8d3e8;line-height:1.7;overflow-x:auto;white-space:pre}
+.qtag{display:inline-block;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:1px;padding:3px 8px;border-radius:5px;margin-bottom:12px;text-transform:uppercase}
+.qtag.sql{background:var(--blueBg);color:#1d4ed8}
+.qtag.acid{background:var(--purpleBg);color:#6d28d9}
+.qtag.tipos{background:var(--orangeBg);color:#c2410c}
+.qtag.nosql{background:var(--tealBg);color:#0f766e}
+.qtag.dist{background:var(--pinkBg);color:#be185d}
+.opts{display:grid;gap:8px}
+.opt{background:var(--card2);border:1.5px solid var(--border);border-radius:10px;padding:13px 16px;font-size:13px;color:var(--text);cursor:pointer;transition:all .2s;text-align:left;font-family:'DM Sans',sans-serif;line-height:1.6;display:flex;align-items:flex-start;gap:10px}
+.opt:hover:not(.locked){border-color:var(--teal);background:var(--opt-hover)}
+.opt .letter{font-family:'DM Mono',monospace;font-weight:600;font-size:13px;color:var(--text2);min-width:22px;height:22px;display:flex;align-items:center;justify-content:center;border-radius:6px;background:rgba(128,128,128,.1);flex-shrink:0;margin-top:1px}
+.opt.correct{border-color:var(--green2);background:var(--greenBg)}.opt.correct .letter{background:var(--green);color:#fff}
+.opt.wrong{border-color:var(--red2);background:var(--redBg)}.opt.wrong .letter{background:var(--red);color:#fff}
+.opt.locked{cursor:default;opacity:.7}.opt.correct.locked{opacity:1}.opt.dimmed{opacity:.45}
+.fb{margin-top:14px;padding:16px;border-radius:10px;animation:fadeUp .3s ease both;font-size:13px;line-height:1.75}
+.fb.ok{background:var(--greenBg);border:1px solid rgba(22,163,74,.2)}.fb.ok .fb-tag{color:var(--green)}
+.fb.no{background:var(--redBg);border:1px solid rgba(220,38,38,.2)}.fb.no .fb-tag{color:var(--red)}
+.fb-tag{font-weight:700;font-size:12px;letter-spacing:1px;text-transform:uppercase;margin-bottom:6px;font-family:'DM Mono',monospace}
+.fb-text{color:var(--text)}
+.fb-trap{margin-top:10px;padding:10px 12px;background:var(--amberBg);border:1px solid rgba(217,119,6,.2);border-radius:8px}
+.fb-trap .trap-tag{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:1px;color:var(--amber);font-weight:600;margin-bottom:4px}
+.fb-trap p{font-size:12px;color:var(--text);line-height:1.6}
+.nav{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}
+.results{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:28px;animation:fadeUp .4s ease both}
+.results h2{font-size:20px;color:var(--white);margin-bottom:16px}
+.score-big{font-family:'DM Mono',monospace;font-size:48px;font-weight:700;margin-bottom:4px}
+.score-ok{color:var(--green)}.score-mid{color:var(--amber)}.score-bad{color:var(--red)}
+.cat-scores{display:grid;gap:6px;margin:16px 0}
+.cat-row{display:flex;align-items:center;gap:10px;font-size:13px}
+.cat-row .cat-name{min-width:180px;color:var(--text2);font-size:12px}
+.cat-row .cat-track{flex:1;height:5px;background:#e5e7eb;border-radius:3px;overflow:hidden}
+.cat-row .cat-fill{height:100%;border-radius:3px;transition:width .6s ease}
+.cat-row .cat-val{font-family:'DM Mono',monospace;font-size:11px;color:var(--text2);min-width:36px;text-align:right}
+.qdots{display:flex;gap:4px;flex-wrap:wrap;margin-top:14px}
+.qdot{width:26px;height:26px;border-radius:6px;font-size:11px;font-family:'DM Mono',monospace;cursor:pointer;display:flex;align-items:center;justify-content:center;border:1px solid var(--border);background:var(--card2);color:var(--text2);transition:all .2s}
+</style>
+</head>
+<body>
+<div class="topnav">
+  <span class="nav-brand">EGEL · Área 3 · Sesión 17</span>
+  <div style="display:flex;align-items:center;gap:6px">
+    <div class="nav-tabs">
+      <button class="ntab active" onclick="showPage('mapa')">🗺️ Mapa</button>
+      <button class="ntab" onclick="showPage('compara')">⚖️ Comparativas</button>
+      <button class="ntab" onclick="showPage('flash')">🃏 Flashcards</button>
+      <button class="ntab" onclick="showPage('quiz')">📝 Quiz</button>
+    </div>
+    <button id="theme-btn" onclick="toggleTheme()" style="padding:7px 10px;border-radius:8px;border:1px solid var(--border);background:transparent;cursor:pointer;font-size:15px;line-height:1;transition:all .2s" title="Cambiar tema">🌙</button>
+  </div>
+</div>
+<div class="shell">
+  <div class="hdr">
+    <div class="tag">EGEL Plus · Área 3 · Subárea 3.4</div>
+    <h1>Gestión de Datos</h1>
+    <p>SQL · ACID · Tipos de datos · NoSQL · Fragmentación y Replicación</p>
+  </div>
+  <div id="page-mapa" class="page"></div>
+  <div id="page-compara" class="hidden page"></div>
+  <div id="page-flash" class="hidden page"></div>
+  <div id="page-quiz" class="hidden page"></div>
+</div>
+<script>
+const MAPA = [
+  {
+    cls:'sql', icon:'🗄️', title:'SQL — Lenguaje Estructurado de Consulta',
+    sub:'El estándar para consultar y manipular bases de datos relacionales',
+    desc:'SQL (Structured Query Language) es el lenguaje declarativo estándar para bases de datos relacionales. Describe QUÉ datos se quieren, no CÓMO obtenerlos — el motor decide el plan de ejecución.',
+    items:[
+      { dot:'#2563eb', name:'DML — Manipulación de datos', tag:'SELECT INSERT UPDATE DELETE',
+        body:`<strong>SELECT:</strong> consultar datos. Es el 80% del uso de SQL en la práctica.<br>
+<strong>INSERT:</strong> insertar filas nuevas.<br>
+<strong>UPDATE:</strong> modificar filas existentes.<br>
+<strong>DELETE:</strong> eliminar filas.<br><br>
+<strong>Cláusulas de SELECT:</strong><br>
+• <strong>WHERE:</strong> filtrar filas.<br>
+• <strong>ORDER BY:</strong> ordenar resultado.<br>
+• <strong>LIMIT/TOP:</strong> limitar número de filas.<br>
+• <strong>DISTINCT:</strong> eliminar duplicados.
+<div class="code"><span class="k">SELECT</span> <span class="n">nombre, salario</span>
+<span class="k">FROM</span> <span class="n">empleados</span>
+<span class="k">WHERE</span> <span class="n">departamento</span> = <span class="s">'Ventas'</span>
+<span class="k">ORDER BY</span> <span class="n">salario</span> <span class="k">DESC</span>
+<span class="k">LIMIT</span> <span class="n">10</span>;</div>` },
+      { dot:'#2563eb', name:'JOINs — Combinación de tablas', tag:'Relaciones',
+        body:`Los JOINs combinan filas de dos o más tablas basándose en una columna relacionada.<br><br>
+<strong>INNER JOIN:</strong> solo filas con coincidencia en AMBAS tablas.<br>
+<strong>LEFT JOIN:</strong> todas las filas de la tabla izquierda + coincidencias de la derecha (NULL si no hay).<br>
+<strong>RIGHT JOIN:</strong> lo inverso del LEFT JOIN.<br>
+<strong>FULL OUTER JOIN:</strong> todas las filas de ambas tablas, NULL donde no hay coincidencia.
+<div class="code"><span class="k">SELECT</span> <span class="n">p.nombre, o.fecha, o.total</span>
+<span class="k">FROM</span> <span class="n">pedidos o</span>
+<span class="k">INNER JOIN</span> <span class="n">clientes p</span> <span class="k">ON</span> <span class="n">o.cliente_id = p.id</span>
+<span class="k">WHERE</span> <span class="n">o.total</span> > <span class="n">1000</span>;</div>
+<div class="tip"><strong>⚡ EGEL:</strong> INNER JOIN = intersección. LEFT JOIN = todo lo izquierdo + lo que coincide. La clave es entender qué filas aparecen cuando NO hay coincidencia.</div>` },
+      { dot:'#2563eb', name:'GROUP BY, HAVING y funciones de agregación', tag:'Agrupación',
+        body:`<strong>Funciones de agregación:</strong> operan sobre grupos de filas.<br>
+• <strong>COUNT(*):</strong> número de filas.<br>
+• <strong>SUM(col):</strong> suma.<br>
+• <strong>AVG(col):</strong> promedio.<br>
+• <strong>MAX/MIN(col):</strong> máximo/mínimo.<br><br>
+<strong>GROUP BY:</strong> agrupa filas por los valores de una columna. Las funciones de agregación se aplican por grupo.<br>
+<strong>HAVING:</strong> filtra GRUPOS (como WHERE pero después de agrupar).
+<div class="code"><span class="k">SELECT</span> <span class="n">departamento,</span> <span class="f">COUNT</span>(<span class="n">*</span>) <span class="k">AS</span> <span class="n">total,</span> <span class="f">AVG</span>(<span class="n">salario</span>) <span class="k">AS</span> <span class="n">promedio</span>
+<span class="k">FROM</span> <span class="n">empleados</span>
+<span class="k">GROUP BY</span> <span class="n">departamento</span>
+<span class="k">HAVING</span> <span class="f">COUNT</span>(<span class="n">*</span>) > <span class="n">5</span>;</div>
+<div class="tip"><strong>⚡ EGEL:</strong> WHERE filtra filas ANTES de agrupar. HAVING filtra grupos DESPUÉS de agrupar. No se pueden usar alias de agregación en WHERE.</div>` },
+      { dot:'#2563eb', name:'Subconsultas', tag:'Consultas anidadas',
+        body:`Una <strong>subconsulta</strong> es una consulta dentro de otra. Puede aparecer en SELECT, FROM o WHERE.<br><br>
+<strong>Subconsulta en WHERE:</strong> filtra basándose en el resultado de otra consulta.<br>
+<strong>Subconsulta correlacionada:</strong> hace referencia a la consulta exterior — se evalúa una vez por cada fila externa.<br>
+<strong>IN / EXISTS:</strong> operadores para comparar con el resultado de una subconsulta.
+<div class="code"><span class="c">-- Empleados con salario mayor al promedio</span>
+<span class="k">SELECT</span> <span class="n">nombre, salario</span>
+<span class="k">FROM</span> <span class="n">empleados</span>
+<span class="k">WHERE</span> <span class="n">salario</span> > (
+  <span class="k">SELECT</span> <span class="f">AVG</span>(<span class="n">salario</span>) <span class="k">FROM</span> <span class="n">empleados</span>
+);</div>` },
+      { dot:'#2563eb', name:'DDL — Definición de datos', tag:'CREATE ALTER DROP',
+        body:`DDL (Data Definition Language) define la estructura de la base de datos.<br><br>
+<strong>CREATE TABLE:</strong> crear una tabla con sus columnas y tipos.<br>
+<strong>ALTER TABLE:</strong> modificar la estructura de una tabla existente (agregar/quitar columnas).<br>
+<strong>DROP TABLE:</strong> eliminar una tabla completamente.<br>
+<strong>Restricciones (constraints):</strong><br>
+• <strong>PRIMARY KEY:</strong> identifica únicamente cada fila.<br>
+• <strong>FOREIGN KEY:</strong> referencia a la PK de otra tabla — integridad referencial.<br>
+• <strong>NOT NULL:</strong> no permite valores nulos.<br>
+• <strong>UNIQUE:</strong> valores únicos en la columna.<br>
+• <strong>CHECK:</strong> valida que el valor cumpla una condición.
+<div class="tip"><strong>⚡ EGEL:</strong> FOREIGN KEY implementa la integridad referencial — no puedes insertar un pedido con cliente_id que no existe en la tabla clientes.</div>` },
+    ]
+  },
+  {
+    cls:'acid', icon:'⚗️', title:'Transacciones y ACID',
+    sub:'Garantías de consistencia en operaciones sobre la base de datos',
+    desc:'Una transacción es una secuencia de operaciones que se ejecuta como una unidad atómica. ACID define las cuatro propiedades que garantizan la confiabilidad de las transacciones.',
+    items:[
+      { dot:'#7c3aed', name:'Las 4 propiedades ACID', tag:'Fundamento',
+        body:`<strong>A — Atomicidad:</strong> la transacción se ejecuta completa o no se ejecuta nada. No hay estados intermedios visibles. Si falla a la mitad, se hace rollback.<br>
+<strong>C — Consistencia:</strong> la transacción lleva la BD de un estado válido a otro estado válido. No viola restricciones de integridad.<br>
+<strong>I — Aislamiento:</strong> las transacciones concurrentes no se interfieren entre sí. El resultado es como si se ejecutaran en serie.<br>
+<strong>D — Durabilidad:</strong> una vez confirmada (committed), la transacción persiste aunque el sistema falle. Los cambios sobreviven a caídas.
+<div class="ex"><strong>Analogía transferencia bancaria:</strong> restar $500 de cuenta A y sumar $500 a cuenta B es una transacción ATÓMICA. Si el sistema falla entre las dos operaciones, el rollback revierte el débito. No puede quedar el dinero restado sin ser acreditado.</div>` },
+      { dot:'#7c3aed', name:'COMMIT, ROLLBACK y SAVEPOINT', tag:'Control de transacciones',
+        body:`<strong>BEGIN / START TRANSACTION:</strong> inicia una transacción explícita.<br>
+<strong>COMMIT:</strong> confirma todos los cambios de la transacción permanentemente.<br>
+<strong>ROLLBACK:</strong> deshace todos los cambios de la transacción desde el BEGIN.<br>
+<strong>SAVEPOINT:</strong> marca un punto dentro de la transacción al que se puede hacer rollback parcial sin deshacer todo.
+<div class="code"><span class="k">BEGIN</span>;
+<span class="k">UPDATE</span> <span class="n">cuentas</span> <span class="k">SET</span> <span class="n">saldo = saldo - 500</span> <span class="k">WHERE</span> <span class="n">id = 1</span>;
+<span class="k">UPDATE</span> <span class="n">cuentas</span> <span class="k">SET</span> <span class="n">saldo = saldo + 500</span> <span class="k">WHERE</span> <span class="n">id = 2</span>;
+<span class="k">COMMIT</span>; <span class="c">-- ambas operaciones o ninguna</span></div>
+<div class="tip"><strong>⚡ EGEL:</strong> Sin COMMIT explícito en modo manual, los cambios no son visibles para otras sesiones. Sin ROLLBACK tras un error, la transacción queda pendiente hasta que la sesión cierre.</div>` },
+    ]
+  },
+  {
+    cls:'tipos', icon:'📋', title:'Tipos de datos: Estructurados, Semiestructurados y No estructurados',
+    sub:'Cómo se organiza la información según su estructura',
+    desc:'La distinción entre tipos de datos es fundamental para elegir el modelo de almacenamiento correcto. El EGEL evalúa específicamente esta clasificación.',
+    items:[
+      { dot:'#ea580c', name:'Datos estructurados', tag:'SQL / Relacional',
+        body:`Datos con <strong>esquema fijo y rígido</strong> definido antes de insertar. Cada registro sigue exactamente el mismo formato.<br><br>
+<strong>Características:</strong> tablas con columnas tipadas, relaciones entre tablas, esquema en la BD.<br>
+<strong>Almacenamiento:</strong> bases de datos relacionales (MySQL, PostgreSQL, SQL Server, Oracle).<br>
+<strong>Consulta:</strong> SQL estándar.<br><br>
+<strong>Ejemplos de datos:</strong> registros de clientes con nombre/email/teléfono, transacciones financieras, inventarios de productos.
+<div class="tip"><strong>⚡ EGEL:</strong> Estructurado = esquema fijo = SQL. La ventaja es que las consultas son eficientes y predecibles. La desventaja es la rigidez — cambiar el esquema requiere ALTER TABLE.</div>` },
+      { dot:'#ea580c', name:'Datos semiestructurados', tag:'JSON / XML',
+        body:`Datos que tienen <strong>alguna organización pero sin esquema estricto</strong>. Cada registro puede tener campos distintos.<br><br>
+<strong>JSON (JavaScript Object Notation):</strong> pares clave-valor, arrays, objetos anidados. Formato dominante en APIs REST y bases NoSQL de documentos.<br>
+<strong>XML (eXtensible Markup Language):</strong> estructura jerárquica con tags. Usado en servicios SOAP, configuraciones, documentos.<br>
+<strong>Otros:</strong> YAML, CSV con campos variables, HTML.
+<div class="code"><span class="c">// JSON — semiestructurado</span>
+{
+  <span class="s">"cliente_id"</span>: <span class="n">42</span>,
+  <span class="s">"nombre"</span>: <span class="s">"Ana García"</span>,
+  <span class="s">"telefonos"</span>: [<span class="s">"555-1234"</span>, <span class="s">"555-5678"</span>],
+  <span class="s">"direccion"</span>: { <span class="s">"ciudad"</span>: <span class="s">"Monterrey"</span> }
+}</div>
+<div class="tip"><strong>⚡ EGEL:</strong> Semiestructurado = tiene estructura pero flexible. Un usuario puede tener 0 teléfonos, otro puede tener 3 — no hay esquema fijo que lo restrinja.</div>` },
+      { dot:'#ea580c', name:'Datos no estructurados', tag:'Binarios / Texto libre',
+        body:`Datos <strong>sin organización predefinida</strong>. No pueden representarse directamente en tablas relacionales.<br><br>
+<strong>Ejemplos:</strong> imágenes (JPEG, PNG), videos (MP4), audio (MP3), documentos de texto libre (PDFs, correos), posts de redes sociales.<br><br>
+<strong>Almacenamiento:</strong> sistemas de archivos, object storage (S3), data lakes.<br>
+<strong>Consulta:</strong> requiere procesamiento especial: OCR para imágenes de texto, NLP para texto libre, ML para clasificación.
+<div class="ex"><strong>Proporción real:</strong> ~80% de los datos del mundo son no estructurados. Las empresas almacenan estructurados en SQL y no estructurados en sistemas de archivos o cloud storage.</div>` },
+    ]
+  },
+  {
+    cls:'nosql', icon:'🌐', title:'Bases de Datos NoSQL',
+    sub:'Modelos alternativos al relacional para necesidades específicas',
+    desc:'NoSQL ("Not Only SQL") engloba bases de datos que no usan el modelo relacional tabular. Sacrifican algunas garantías ACID a cambio de escalabilidad horizontal, flexibilidad de esquema o rendimiento específico.',
+    items:[
+      { dot:'#0d9488', name:'Tipos de bases NoSQL', tag:'Modelos',
+        body:`<strong>Documento:</strong> almacena documentos JSON/BSON. Esquema flexible, ideal para datos semiestructurados variables.<br>
+→ <em>MongoDB, CouchDB, Firestore</em><br><br>
+<strong>Clave-Valor:</strong> pares clave:valor. Extremadamente rápido para lecturas y escrituras simples. Sin estructura interna consultable.<br>
+→ <em>Redis, DynamoDB, Riak</em><br><br>
+<strong>Columnar (Wide-Column):</strong> organiza datos por columnas en vez de filas. Ideal para grandes volúmenes de datos analíticos con pocas columnas consultadas.<br>
+→ <em>Cassandra, HBase, BigTable</em><br><br>
+<strong>Grafo:</strong> nodos y aristas. Para datos altamente relacionados donde las relaciones son tan importantes como los datos.<br>
+→ <em>Neo4j, Amazon Neptune</em>
+<div class="tip"><strong>⚡ EGEL:</strong> La pregunta típica es identificar qué tipo de NoSQL usar en un escenario. Clave-valor = caché/sesiones. Documento = perfiles/catálogos. Columnar = analítica/IoT. Grafo = redes sociales/recomendaciones.</div>` },
+      { dot:'#0d9488', name:'SQL vs NoSQL — cuándo usar cada uno', tag:'Criterio de selección',
+        body:`<strong>Usa SQL (relacional) cuando:</strong><br>
+• Los datos tienen estructura fija y bien definida.<br>
+• Necesitas transacciones ACID estrictas (ej: bancos).<br>
+• Las relaciones entre entidades son complejas y frecuentes.<br>
+• La consistencia es prioritaria sobre la velocidad.<br><br>
+<strong>Usa NoSQL cuando:</strong><br>
+• Los datos varían en estructura (esquema flexible).<br>
+• Necesitas escalar horizontalmente a millones de registros.<br>
+• El acceso es simple (sin JOINs complejos).<br>
+• La disponibilidad es prioritaria sobre consistencia estricta.
+<div class="ex"><strong>Ejemplo clásico:</strong> sistema bancario = SQL (ACID obligatorio). Red social con perfiles variables y millones de usuarios = NoSQL documento + escalado horizontal.</div>` },
+      { dot:'#0d9488', name:'Teorema CAP', tag:'Limitaciones distribuidas',
+        body:`El <strong>Teorema CAP</strong> (Brewer, 2000) establece que un sistema distribuido solo puede garantizar simultáneamente <strong>2 de 3</strong> propiedades:<br><br>
+<strong>C — Consistencia:</strong> todos los nodos ven los mismos datos al mismo tiempo.<br>
+<strong>A — Disponibilidad:</strong> cada petición recibe respuesta (puede no ser la más reciente).<br>
+<strong>P — Tolerancia a particiones:</strong> el sistema funciona aunque haya pérdida de comunicación entre nodos.<br><br>
+En sistemas distribuidos P es casi obligatorio → la decisión real es C vs A.<br>
+• <strong>CP:</strong> MongoDB, HBase — consistencia + tolerancia.<br>
+• <strong>AP:</strong> Cassandra, DynamoDB — disponibilidad + tolerancia.
+<div class="tip"><strong>⚡ EGEL:</strong> Los RDBMS tradicionales son CA (no distribuidos). Los NoSQL distribuidos eligen entre CP o AP. No existe sistema CAP completo.</div>` },
+    ]
+  },
+  {
+    cls:'dist', icon:'🌍', title:'Fragmentación y Replicación',
+    sub:'Distribuir datos para escalar y aumentar disponibilidad',
+    desc:'Las bases de datos distribuidas dividen o copian los datos entre múltiples nodos. Esto permite escalar más allá de los límites de una sola máquina y aumentar la disponibilidad.',
+    items:[
+      { dot:'#db2777', name:'Fragmentación (Sharding)', tag:'Particionamiento',
+        body:`La <strong>fragmentación</strong> divide los datos en subconjuntos (fragmentos/shards) distribuidos en múltiples nodos. Cada nodo contiene solo una parte de los datos.<br><br>
+<strong>Fragmentación horizontal:</strong> divide por filas. Clientes 1-100k en nodo 1, 100k-200k en nodo 2. Es el tipo más común.<br>
+<strong>Fragmentación vertical:</strong> divide por columnas. Columnas frecuentes en un nodo, columnas BLOB en otro.<br>
+<strong>Fragmentación mixta (híbrida):</strong> combinación de horizontal y vertical.<br><br>
+<strong>Ventaja:</strong> escala la capacidad de escritura y almacenamiento.<br>
+<strong>Desventaja:</strong> las consultas que cruzan fragmentos son más costosas.
+<div class="tip"><strong>⚡ EGEL:</strong> Fragmentación = dividir para escalar. Replicación = copiar para disponibilidad. Son estrategias distintas aunque pueden combinarse.</div>` },
+      { dot:'#db2777', name:'Replicación', tag:'Copias para disponibilidad',
+        body:`La <strong>replicación</strong> mantiene copias idénticas de los datos en múltiples nodos. Si un nodo falla, otro tiene los datos.<br><br>
+<strong>Replicación maestro-esclavo (master-replica):</strong> un nodo maestro recibe escrituras y replica a los esclavos. Los esclavos sirven lecturas.<br>
+<strong>Ventaja:</strong> alta disponibilidad para lecturas, fault tolerance.<br>
+<strong>Desventaja:</strong> lag de replicación — los esclavos pueden estar levemente desactualizados (eventual consistency).<br><br>
+<strong>Replicación multi-maestro:</strong> múltiples nodos aceptan escrituras. Más complejo de coordinar — conflictos de escritura posibles.
+<div class="ex"><strong>Caso de uso típico:</strong> e-commerce con 1 maestro (escrituras de pedidos) + 3 réplicas de lectura (catálogo de productos consultado masivamente). Las lecturas se distribuyen entre las réplicas.</div>` },
+      { dot:'#db2777', name:'Consistencia eventual', tag:'Trade-off de distribución',
+        body:`En sistemas distribuidos con replicación, <strong>consistencia eventual</strong> significa que los datos eventualmente serán consistentes en todos los nodos — pero puede haber un período de inconsistencia temporal.<br><br>
+<strong>Ejemplo:</strong> un usuario actualiza su foto de perfil. El maestro tiene la nueva foto. Las 3 réplicas aún tienen la foto anterior durante unos milisegundos. Otro usuario consultando una réplica ve la foto vieja. Eventualmente todas las réplicas se sincronizan.<br><br>
+<strong>Contraste con consistencia fuerte:</strong> SQL tradicional garantiza que todos ven el mismo dato inmediatamente (costoso en sistemas distribuidos).
+<div class="tip"><strong>⚡ EGEL:</strong> Consistencia eventual es el trade-off de disponibilidad en NoSQL distribuido. No es un bug — es una decisión de diseño consciente según el teorema CAP.</div>` },
+    ]
+  }
+];
+
+const COMPARA = [
+  {
+    id:'joins', label:'Tipos de JOIN',
+    cols:['Tipo','Filas incluidas','Cuándo usarlo'],
+    rows:[
+      ['INNER JOIN','Solo filas con coincidencia en ambas tablas','Cuando solo interesan los datos que tienen relación en ambos lados'],
+      ['LEFT JOIN','Todas las filas izquierdas + coincidencias derechas (NULL si no hay)','Cuando quieres todos los registros principales aunque no tengan detalle'],
+      ['RIGHT JOIN','Todas las filas derechas + coincidencias izquierdas (NULL si no hay)','Lo inverso del LEFT — poco usado, se puede reescribir como LEFT'],
+      ['FULL OUTER JOIN','Todas las filas de ambas tablas (NULL donde no hay match)','Para encontrar registros sin par en cualquiera de los dos lados'],
+      ['CROSS JOIN','Producto cartesiano — cada fila izq. × cada fila der.','Combinaciones exhaustivas, raramente útil sin WHERE adicional'],
+    ]
+  },
+  {
+    id:'where-having', label:'WHERE vs HAVING vs subconsulta',
+    cols:['Cláusula','Cuándo se ejecuta','Qué filtra'],
+    rows:[
+      ['WHERE','Antes de GROUP BY','Filas individuales — puede usar columnas de la tabla'],
+      ['HAVING','Después de GROUP BY','Grupos — puede usar funciones de agregación (COUNT, SUM, AVG)'],
+      ['Subconsulta en WHERE','Con la fila actual','El resultado de otra consulta — escalar, lista o tabla'],
+      ['Subconsulta correlacionada','Una vez por cada fila externa','Depende de valores de la consulta exterior — más lenta'],
+    ]
+  },
+  {
+    id:'acid', label:'Propiedades ACID',
+    cols:['Propiedad','Qué garantiza','Qué pasa sin ella'],
+    rows:[
+      ['Atomicidad','Todo o nada — no estados intermedios','Transferencia incompleta: dinero restado pero no acreditado'],
+      ['Consistencia','BD pasa de estado válido a estado válido','Violación de constraints: FK apuntando a registro inexistente'],
+      ['Aislamiento','Transacciones concurrentes no se interfieren','Dirty read: leer datos no confirmados de otra transacción'],
+      ['Durabilidad','Los commits persisten ante fallos del sistema','Pérdida de datos: transacción confirmada pero no guardada en disco'],
+    ]
+  },
+  {
+    id:'tipos-datos', label:'Tipos de datos: Estructurado vs Semiestructurado vs No estructurado',
+    cols:['Estructurado','Semiestructurado','No estructurado'],
+    rows:[
+      ['Esquema','Fijo, definido antes de insertar','Flexible, puede variar por registro','Ninguno'],
+      ['Formato','Tablas con columnas tipadas','JSON, XML, YAML, CSV variable','Imágenes, video, audio, texto libre'],
+      ['Consulta','SQL estándar','XPath, JSONPath, queries NoSQL','ML, NLP, búsqueda full-text'],
+      ['Almacenamiento','RDBMS (MySQL, PostgreSQL)','NoSQL documento (MongoDB)','S3, HDFS, data lakes'],
+      ['Ejemplo','Tabla empleados con id/nombre/salario','Perfil con número variable de teléfonos','Foto de perfil, correo electrónico'],
+    ]
+  },
+  {
+    id:'nosql-tipos', label:'Tipos de NoSQL',
+    cols:['Tipo','Modelo de datos','Casos de uso','Ejemplos'],
+    rows:[
+      ['Documento','Documentos JSON/BSON','Perfiles, catálogos, CMS, APIs','MongoDB, Firestore, CouchDB'],
+      ['Clave-Valor','Par key:value opaco','Caché, sesiones, configuración','Redis, DynamoDB, Riak'],
+      ['Columnar','Familias de columnas','Analytics, IoT, series de tiempo','Cassandra, HBase, BigTable'],
+      ['Grafo','Nodos y aristas con propiedades','Redes sociales, recomendaciones, fraude','Neo4j, Neptune, TigerGraph'],
+    ]
+  },
+  {
+    id:'frag-rep', label:'Fragmentación vs Replicación',
+    cols:['Fragmentación (Sharding)','Replicación'],
+    rows:[
+      ['Objetivo','Escalar capacidad de almacenamiento y escritura','Aumentar disponibilidad y tolerancia a fallos'],
+      ['Cómo','Divide los datos en subconjuntos en distintos nodos','Copia los mismos datos en múltiples nodos'],
+      ['Cada nodo tiene','Una parte de los datos','Una copia completa (o parcial) de los datos'],
+      ['Beneficio principal','Escala horizontal ilimitada en teoría','Fault tolerance: si un nodo falla, otro responde'],
+      ['Complejidad','Consultas cross-shard costosas','Lag de replicación — inconsistencia temporal'],
+      ['Combinación','Se pueden combinar: fragmentar Y replicar cada fragmento','—'],
+    ]
+  },
+];
+
+const FLASH = [
+  {cat:'SQL',color:'#2563eb',bg:'rgba(37,99,235,.1)',emoji:'🔗',
+   q:'¿Cuál es la diferencia entre INNER JOIN, LEFT JOIN y FULL OUTER JOIN?',
+   a:'INNER = solo coincidencias. LEFT = todo lo izquierdo + coincidencias. FULL = todo de ambos lados',
+   body:'INNER JOIN retorna solo las filas que tienen match en ambas tablas. LEFT JOIN retorna todas las filas de la tabla izquierda, y NULL en las columnas derechas cuando no hay match. FULL OUTER JOIN retorna todas las filas de ambas tablas con NULL donde no hay coincidencia.',
+   key:'INNER = intersección. LEFT = izquierda completa. FULL = unión completa'},
+  {cat:'SQL',color:'#2563eb',bg:'rgba(37,99,235,.1)',emoji:'📊',
+   q:'¿Cuál es la diferencia entre WHERE y HAVING?',
+   a:'WHERE filtra filas ANTES de agrupar. HAVING filtra grupos DESPUÉS de agrupar',
+   body:'WHERE se ejecuta antes de GROUP BY y filtra filas individuales — no puede usar funciones de agregación. HAVING se ejecuta después de GROUP BY y filtra grupos — puede usar COUNT, SUM, AVG. Regla: si la condición usa una función de agregación, debe ir en HAVING.',
+   key:'WHERE = antes de GROUP BY. HAVING = después de GROUP BY'},
+  {cat:'ACID',color:'#7c3aed',bg:'rgba(124,58,237,.1)',emoji:'⚗️',
+   q:'¿Qué garantiza cada letra de ACID?',
+   a:'Atomicidad (todo o nada), Consistencia (estado válido), Aislamiento (sin interferencia), Durabilidad (persiste)',
+   body:'A: la transacción completa o no se ejecuta nada — no hay estados intermedios. C: la BD pasa de un estado válido a otro válido sin violar constraints. I: las transacciones concurrentes no se ven entre sí hasta hacer commit. D: una vez committeado, los datos sobreviven a fallos del sistema.',
+   key:'A=atomicidad, C=consistencia, I=aislamiento, D=durabilidad'},
+  {cat:'Tipos',color:'#ea580c',bg:'rgba(234,88,12,.1)',emoji:'📋',
+   q:'¿Cuál es la diferencia entre datos estructurados, semiestructurados y no estructurados?',
+   a:'Estructurado = esquema fijo (SQL). Semiestructurado = flexible (JSON/XML). No estructurado = sin esquema (imágenes/video)',
+   body:'Estructurado: tablas con columnas tipadas, esquema rígido, consulta con SQL. Semiestructurado: tiene organización pero flexible, registros con diferentes campos, JSON/XML. No estructurado: sin organización predefinida, requiere procesamiento especial (ML, NLP, OCR).',
+   key:'Fijo=SQL. Flexible=JSON/XML. Sin esquema=imágenes/video/texto libre'},
+  {cat:'NoSQL',color:'#0d9488',bg:'rgba(13,148,136,.1)',emoji:'🌐',
+   q:'¿Cuándo elegir NoSQL de documentos vs NoSQL clave-valor?',
+   a:'Documento = datos semiestructurados con campos consultables. Clave-valor = acceso por clave única, sin consultas internas',
+   body:'Documento (MongoDB): ideal cuando los datos varían en estructura y necesitas hacer queries sobre campos específicos del documento. Clave-valor (Redis): extremadamente rápido cuando solo necesitas obtener un valor por su clave — sin consultas complejas. Redis se usa principalmente como caché.',
+   key:'Documento = estructura variable + queries. Clave-valor = velocidad máxima + acceso simple'},
+  {cat:'Distribución',color:'#db2777',bg:'rgba(219,39,119,.1)',emoji:'🌍',
+   q:'¿Cuál es la diferencia entre fragmentación y replicación?',
+   a:'Fragmentación = dividir datos para escalar. Replicación = copiar datos para disponibilidad',
+   body:'Fragmentación (sharding): cada nodo tiene solo una parte de los datos. Escala el almacenamiento y escritura. Replicación: múltiples nodos tienen copias de los mismos datos. Aumenta disponibilidad y tolerancia a fallos. Pueden combinarse: fragmentar Y replicar cada fragmento.',
+   key:'Fragmentación = escala. Replicación = disponibilidad. Se pueden combinar'},
+  {cat:'ACID',color:'#7c3aed',bg:'rgba(124,58,237,.1)',emoji:'💸',
+   q:'En una transferencia bancaria, ¿qué propiedad ACID evita que el dinero quede "en el aire" si el sistema falla entre el débito y el crédito?',
+   a:'Atomicidad — la transacción se ejecuta completa o se hace rollback de todo',
+   body:'Sin atomicidad, si el sistema falla después de restar $500 de cuenta A pero antes de sumar $500 a cuenta B, el dinero desaparece. Con atomicidad, el rollback automático revierte el débito. La transacción debe committearse con AMBAS operaciones o con ninguna.',
+   key:'Atomicidad = todo o nada = no estados intermedios visibles'},
+  {cat:'NoSQL',color:'#0d9488',bg:'rgba(13,148,136,.1)',emoji:'⚖️',
+   q:'¿Qué dice el Teorema CAP y cuál es la decisión real en sistemas distribuidos?',
+   a:'No se pueden garantizar C+A+P simultáneamente. Como P es obligatorio, la decisión real es Consistencia vs Disponibilidad',
+   body:'CAP: Consistencia (todos ven los mismos datos), Disponibilidad (siempre responde), Tolerancia a Particiones (funciona con fallos de red). En sistemas distribuidos, P es casi obligatorio. MongoDB elige CP (consistencia + tolerancia). Cassandra elige AP (disponibilidad + tolerancia).',
+   key:'P es obligatorio en distribuidos → elegir entre C (MongoDB) o A (Cassandra)'},
+  {cat:'SQL',color:'#2563eb',bg:'rgba(37,99,235,.1)',emoji:'🔑',
+   q:'¿Cuál es la diferencia entre PRIMARY KEY y FOREIGN KEY?',
+   a:'PK identifica únicamente cada fila de la tabla. FK referencia la PK de otra tabla para integridad referencial',
+   body:'PRIMARY KEY: columna(s) cuyo valor identifica de forma única cada fila. No puede ser NULL ni duplicada. FOREIGN KEY: columna que apunta a la PK de otra tabla — garantiza que no puedes insertar un valor que no existe en la tabla referenciada (integridad referencial).',
+   key:'PK = identidad única de la fila. FK = referencia a otra tabla'},
+  {cat:'Distribución',color:'#db2777',bg:'rgba(219,39,119,.1)',emoji:'🔄',
+   q:'¿Qué es la consistencia eventual y por qué es un trade-off aceptable en NoSQL?',
+   a:'Los datos eventualmente son iguales en todos los nodos — hay un lag temporal. Trade-off: disponibilidad a cambio de consistencia inmediata',
+   body:'Con replicación, cuando se escribe en el maestro, las réplicas tardan milisegundos en sincronizarse. Durante ese tiempo, lecturas de réplicas ven datos levemente desactualizados. Para casos como redes sociales (likes, vistas), esto es aceptable. Para bancos (saldos), no lo es.',
+   key:'Eventual consistency = lag temporal en réplicas = disponible pero no inmediatamente consistente'},
+  {cat:'SQL',color:'#2563eb',bg:'rgba(37,99,235,.1)',emoji:'📐',
+   q:'¿Cuál es el orden de ejecución lógico de una query SQL con GROUP BY?',
+   a:'FROM → JOIN → WHERE → GROUP BY → HAVING → SELECT → ORDER BY → LIMIT',
+   body:'Este orden determina qué puede referenciarse en cada cláusula. WHERE se ejecuta antes de GROUP BY, por eso no puede usar alias de agregación. HAVING se ejecuta después, por eso puede usar COUNT/SUM. SELECT se ejecuta casi al final, por eso los alias del SELECT no son visibles en WHERE.',
+   key:'FROM→WHERE→GROUP BY→HAVING→SELECT→ORDER BY. WHERE antes de agrupar, HAVING después'},
+  {cat:'Tipos',color:'#ea580c',bg:'rgba(234,88,12,.1)',emoji:'🔀',
+   q:'¿Por qué JSON se clasifica como semiestructurado y no como estructurado?',
+   a:'Porque no tiene esquema fijo — cada documento puede tener campos diferentes en número y tipo',
+   body:'En una BD relacional, cada fila de la tabla clientes debe tener exactamente las mismas columnas. En JSON, un cliente puede tener 0 teléfonos, otro puede tener 3, y otro puede tener un campo adicional "empresa" que los demás no tienen. Esa flexibilidad es lo que define lo semiestructurado.',
+   key:'Semiestructurado = tiene organización (clave:valor) pero sin esquema fijo obligatorio'},
+];
+
+const QUESTIONS = [
+  {cat:'sql',catL:'SQL',
+   q:'Una empresa necesita listar todos los clientes junto con el monto total de sus pedidos. Los clientes sin pedidos deben aparecer con total NULL.\n\nSELECT c.nombre, SUM(p.monto) AS total\nFROM clientes c\n___ pedidos p ON c.id = p.cliente_id\nGROUP BY c.nombre;\n\n¿Qué tipo de JOIN completa correctamente la consulta?',
+   opts:['INNER JOIN — retorna solo clientes con al menos un pedido','LEFT JOIN — retorna todos los clientes aunque no tengan pedidos','RIGHT JOIN — retorna solo los pedidos con cliente asociado','CROSS JOIN — genera el producto cartesiano de ambas tablas'],
+   ans:1,
+   exp:'LEFT JOIN retorna todas las filas de la tabla izquierda (clientes) y las filas coincidentes de la derecha (pedidos). Si un cliente no tiene pedidos, aparece con NULL en las columnas de pedidos — SUM(NULL) retorna NULL. INNER JOIN excluiría a los clientes sin pedidos.',
+   trap:'INNER JOIN es el error más común aquí — solo devuelve clientes con al menos un pedido, excluyendo exactamente lo que el enunciado pide mostrar.'},
+
+  {cat:'sql',catL:'SQL',
+   q:'Un analista escribe esta consulta para obtener departamentos con más de 3 empleados:\n\nSELECT departamento, COUNT(*) AS total\nFROM empleados\nWHERE COUNT(*) > 3\nGROUP BY departamento;\n\n¿Cuál es el error y cómo se corrige?',
+   opts:['COUNT(*) no puede usarse en WHERE — debe reemplazarse por una subconsulta','GROUP BY debe colocarse antes de WHERE para que el conteo funcione correctamente','El alias total no es visible en WHERE porque SELECT se evalúa después','WHERE debe reemplazarse por HAVING para filtrar después del agrupamiento'],
+   ans:3,
+   exp:'WHERE se ejecuta ANTES de GROUP BY y no puede usar funciones de agregación como COUNT(*). Para filtrar basándose en el resultado de una agregación, se usa HAVING, que se ejecuta DESPUÉS del agrupamiento. La corrección: reemplazar WHERE con HAVING.',
+   trap:'Cambiar COUNT por SUM no resuelve nada — el problema es dónde está la condición, no qué función se usa. El motor SQL evalúa WHERE antes de agrupar, cuando aún no existe ningún COUNT.'},
+
+  {cat:'acid',catL:'Transacciones ACID',
+   q:'Un sistema procesa esta transferencia bancaria:\n\nBEGIN;\nUPDATE cuentas SET saldo = saldo - 5000 WHERE id = 101;\n-- Sistema falla aquí por corte de luz\nUPDATE cuentas SET saldo = saldo + 5000 WHERE id = 202;\nCOMMIT;\n\n¿Qué propiedad ACID garantiza que el saldo de la cuenta 101 se restaura?',
+   opts:['Consistencia — la BD vuelve a un estado que cumple todas las restricciones','Atomicidad — como no hubo COMMIT, la transacción incompleta se revierte','Aislamiento — otras transacciones no ven el débito hasta el COMMIT','Durabilidad — los cambios no committeados no persisten en disco'],
+   ans:1,
+   exp:'Atomicidad garantiza que la transacción se ejecuta completa o no se ejecuta nada. Al no llegar al COMMIT, el motor realiza un rollback automático al reiniciarse. El débito se revierte y la cuenta 101 recupera su saldo original. No puede quedar la BD en el estado intermedio.',
+   trap:'Durabilidad garantiza que los datos COMMITTEADOS persisten — aplica al caso contrario: que un COMMIT exitoso no se pierda. Aquí el problema es lo opuesto: que un cambio NO committeado no persista.'},
+
+  {cat:'tipos',catL:'Tipos de datos',
+   q:'Un sistema de recursos humanos almacena información de empleados. Cada empleado tiene: nombre, fecha de nacimiento, salario (siempre presentes) y un número variable de certificaciones (algunos tienen 0, otros tienen 15, con campos distintos por certificación).\n\n¿Qué modelo se adapta mejor a las certificaciones?',
+   opts:['Datos estructurados en tabla relacional con columna por certificación','Datos no estructurados en sistema de archivos con un PDF por empleado','Datos semiestructurados en modelo de documento con array de certificaciones','Datos estructurados con tabla separada de certificaciones normalizada'],
+   ans:2,
+   exp:'Las certificaciones son semiestructuradas: su número varía por empleado (0 a 15) y sus campos pueden diferir entre certificaciones. Un modelo de documento (JSON) con un array de certificaciones por empleado maneja esta variabilidad naturalmente sin columnas nulas o tablas adicionales. Una tabla normalizada también funciona pero es menos flexible.',
+   trap:'Una tabla relacional normalizada (opción D) también es válida técnicamente, pero la pregunta es sobre adaptación al modelo de datos. Con campos distintos por certificación y número variable, el modelo de documento es más natural que crear columnas para cada campo posible.'},
+
+  {cat:'nosql',catL:'NoSQL',
+   q:'Una startup construye una app de redes sociales con 10 millones de usuarios. Necesitan almacenar perfiles de usuario donde cada perfil puede tener diferente número de intereses, trabajos anteriores y fotos. Las consultas más frecuentes son por user_id.\n\n¿Qué base de datos es la más adecuada y por qué?',
+   opts:['MongoDB — esquema flexible para perfiles variables con escalado horizontal','PostgreSQL — garantiza ACID completo y permite JOINs complejos entre perfiles','Redis — acceso por clave extremadamente rápido para millones de usuarios','Cassandra — optimizado para escrituras masivas en clusters distribuidos'],
+   ans:0,
+   exp:'MongoDB (documento NoSQL) es ideal: esquema flexible para perfiles con estructura variable, escala horizontal para 10M de usuarios, y las consultas por user_id mapean directamente al modelo de documento. No se necesitan JOINs complejos ni ACID estricto para perfiles de red social.',
+   trap:'Redis también escala y accede por clave, pero no permite consultar campos internos del perfil ni tiene esquema flexible para datos complejos. Redis es óptimo como caché, no como base de datos principal de perfiles.'},
+
+  {cat:'sql',catL:'SQL',
+   q:'Un DBA analiza el rendimiento de esta consulta que tarda 8 segundos en una tabla de 5 millones de pedidos:\n\nSELECT cliente_id, SUM(monto) AS total\nFROM pedidos\nWHERE fecha BETWEEN \'2024-01-01\' AND \'2024-12-31\'\nGROUP BY cliente_id\nHAVING SUM(monto) > 10000\nORDER BY total DESC;\n\n¿Cuál es el orden correcto de evaluación de las cláusulas en esta consulta?',
+   opts:['SELECT → FROM → WHERE → GROUP BY → HAVING → ORDER BY','WHERE → FROM → GROUP BY → HAVING → SELECT → ORDER BY','GROUP BY → WHERE → HAVING → FROM → SELECT → ORDER BY','FROM → WHERE → GROUP BY → HAVING → SELECT → ORDER BY'],
+   ans:3,
+   exp:'El orden lógico de evaluación SQL es: FROM (qué tabla) → WHERE (filtrar filas) → GROUP BY (agrupar) → HAVING (filtrar grupos) → SELECT (proyectar columnas) → ORDER BY (ordenar). Este orden explica por qué WHERE no puede usar alias de SELECT ni funciones de agregación.',
+   trap:'SELECT no se ejecuta primero aunque aparezca primero en la escritura. SQL es declarativo — el orden de escritura no refleja el orden de ejecución. Esta confusión causa errores al intentar referenciar alias del SELECT en el WHERE.'},
+
+  {cat:'dist',catL:'Fragmentación y Replicación',
+   q:'Una empresa de e-commerce tiene 500 millones de pedidos en su base de datos. Las consultas de un solo nodo tardan 30 segundos. El arquitecto propone dividir los pedidos por rango de fecha: 2020-2021 en servidor A, 2022-2023 en servidor B, 2024+ en servidor C.\n\n¿Qué estrategia describe esto y cuál es su principal limitación?',
+   opts:['Replicación maestro-esclavo — el lag entre réplicas causa inconsistencias','Fragmentación horizontal — consultas que cruzan rangos de fecha son costosas','Fragmentación vertical — separar las columnas de fecha del resto es ineficiente','Replicación multi-maestro — los conflictos de escritura son difíciles de resolver'],
+   ans:1,
+   exp:'Fragmentación horizontal por rango: divide filas (pedidos) según un criterio (fecha) entre múltiples nodos. La limitación principal es que las consultas que necesitan datos de múltiples fragmentos (ej: reporte anual que cruza 2021-2022) requieren consultar varios nodos y unir resultados — costoso.',
+   trap:'Replicación copia los MISMOS datos en múltiples nodos. Fragmentación divide datos DIFERENTES en cada nodo. Aquí cada servidor tiene un subconjunto distinto de pedidos — eso es fragmentación, no replicación.'},
+
+  {cat:'nosql',catL:'NoSQL',
+   q:'Un sistema de recomendaciones necesita encontrar "amigos de amigos que compraron X" navegando relaciones entre millones de usuarios. Las consultas requieren múltiples saltos por relaciones.\n\n¿Qué tipo de base de datos NoSQL está diseñado específicamente para este patrón?',
+   opts:['Clave-valor — acceso O(1) por clave del usuario para máxima velocidad','Columnar — optimizado para consultas analíticas sobre grandes conjuntos','Documento — almacena el perfil completo del usuario con sus relaciones','Grafo — nodos y aristas con traversal eficiente de múltiples saltos'],
+   ans:3,
+   exp:'Las bases de datos de grafo (Neo4j, Neptune) están diseñadas para traversal de relaciones con múltiples saltos. "Amigos de amigos" es exactamente el patrón que optimizan: cada nodo es un usuario, cada arista es una relación. En SQL, esto requeriría múltiples JOINs costosos.',
+   trap:'Una BD de documentos podría almacenar las relaciones, pero navegar múltiples saltos requeriría múltiples queries. El grafo hace esto en una sola consulta con Cypher/Gremlin, optimizada para traversal.'},
+
+  {cat:'acid',catL:'Transacciones ACID',
+   q:'Dos transacciones concurrentes ejecutan simultáneamente:\n\nT1: UPDATE productos SET stock = stock - 1 WHERE id = 5;\nT2: SELECT stock FROM productos WHERE id = 5;\n\nT2 lee el stock ANTES de que T1 haga COMMIT. T2 ve stock = 10, pero T1 luego hace rollback.\n\n¿Qué problema de concurrencia describe esto y qué propiedad ACID lo previene?',
+   opts:['Escritura sucia — la propiedad Durabilidad garantiza que T1 persista','Lectura sucia — la propiedad Aislamiento evita leer datos no confirmados','Lectura no repetible — la Consistencia asegura que T2 lea siempre el mismo valor','Escritura fantasma — la Atomicidad evita que T1 quede en estado intermedio'],
+   ans:1,
+   exp:'Lectura sucia (dirty read): T2 lee datos modificados por T1 que aún no hizo COMMIT. Si T1 hace rollback, T2 tomó decisiones basadas en datos que nunca existieron. El Aislamiento (ACID-I) previene esto: en el nivel de aislamiento READ COMMITTED, T2 no ve los cambios de T1 hasta que haga COMMIT.',
+   trap:'La Atomicidad aplica a T1 internamente (todo o nada). El problema aquí es la INTERACCIÓN entre dos transacciones concurrentes — eso es responsabilidad del Aislamiento.'},
+
+  {cat:'dist',catL:'Fragmentación y Replicación',
+   q:'Una red social actualiza el contador de "me gusta" de una publicación. El maestro recibe la escritura inmediatamente. Las 4 réplicas de lectura se actualizan 200ms después. Un usuario que consulta una réplica durante ese intervalo ve el contador anterior.\n\n¿Cómo se clasifica este comportamiento y en qué escenario sería inaceptable?',
+   opts:['Fragmentación horizontal — inaceptable cuando los datos son muy grandes','Consistencia eventual — inaceptable en transacciones financieras con saldos','Replicación síncrona — inaceptable cuando la latencia de escritura importa','Aislamiento serializable — inaceptable en sistemas de alta concurrencia'],
+   ans:1,
+   exp:'Consistencia eventual: los datos eventualmente son iguales en todos los nodos, pero hay un lag temporal. Para "me gusta" en redes sociales, ver el contador con 200ms de retraso es aceptable. Para saldos bancarios, es inaceptable — ver un saldo desactualizado podría causar sobregiro o fraude.',
+   trap:'Esto no es un problema de fragmentación — los mismos datos están en múltiples nodos (replicación), no divididos. La consistencia eventual es inherente a la replicación asíncrona, no un defecto.'},
+
+  {cat:'sql',catL:'SQL',
+   q:'Una consulta debe retornar el nombre de cada producto y el número de veces que fue ordenado, incluyendo productos que NUNCA han sido ordenados (mostrar 0).\n\nSELECT p.nombre, COUNT(o.id) AS veces\nFROM productos p\n___ ordenes o ON p.id = o.producto_id\nGROUP BY p.nombre;',
+   opts:['INNER JOIN — COUNT(*) incluye automáticamente los productos sin órdenes','RIGHT JOIN — retorna todos los productos desde la tabla de la derecha','LEFT JOIN — COUNT(o.id) retorna 0 para productos sin órdenes por los NULLs','FULL JOIN — incluye registros sin coincidencia de ambas tablas a la vez'],
+   ans:2,
+   exp:'LEFT JOIN retorna todos los productos aunque no tengan órdenes (NULL en columnas de órdenes). COUNT(o.id) — contar el ID específico de órdenes — retorna 0 cuando o.id es NULL (productos sin órdenes). Si se usara COUNT(*), contaría la fila con NULL y retornaría 1 en vez de 0.',
+   trap:'COUNT(*) cuenta todas las filas incluyendo las con NULL, por lo que los productos sin órdenes mostrarían 1 en vez de 0. La clave es usar COUNT(o.id) que ignora NULLs, no COUNT(*).'},
+
+  {cat:'nosql',catL:'NoSQL',
+   q:'El teorema CAP afirma que un sistema distribuido no puede garantizar las tres propiedades simultáneamente. Una empresa bancaria prioriza que todos los nodos tengan datos idénticos en todo momento y que el sistema funcione aunque haya pérdida de red entre centros de datos.\n\n¿Qué tipo de sistema elige y a qué renuncia?',
+   opts:['Sistema CP — renuncia a disponibilidad para garantizar consistencia y particiones','Sistema AP — renuncia a consistencia para mantener disponibilidad ante particiones','Sistema CA — renuncia a tolerancia a particiones operando como sistema centralizado','Sistema CAP — garantiza las tres propiedades con replicación síncrona'],
+   ans:0,
+   exp:'CP (Consistencia + Tolerancia a Particiones): el sistema garantiza que todos los nodos ven los mismos datos (consistencia) y funciona con fallos de red (tolerancia), pero puede volverse no disponible (rechazar peticiones) durante una partición de red para no servir datos inconsistentes. MongoDB y HBase son ejemplos CP.',
+   trap:'Un sistema CAP completo no existe — es precisamente lo que el teorema establece como imposible. CA renuncia a tolerancia a particiones, siendo monolítico — no es distribuido en el sentido moderno.'},
+
+  {cat:'tipos',catL:'Tipos de datos',
+   q:'Un sistema de análisis de sentimientos procesa 10,000 reseñas de productos por día. Cada reseña es texto libre de longitud variable, sin estructura predefinida, escrito en lenguaje natural.\n\n¿Cómo se clasifican estas reseñas y qué tecnología es apropiada para consultarlas?',
+   opts:['Datos estructurados — se almacenan en tabla SQL con columna TEXT','Datos semiestructurados — se indexan con JSON y se consultan con JSONPath','Datos no estructurados — se procesan con NLP o búsqueda full-text','Datos semiestructurados — XML es el formato estándar para texto libre'],
+   ans:2,
+   exp:'Texto libre sin organización predefinida son datos no estructurados. No tienen esquema, campos, ni formato consistente. Para consultarlos se necesita procesamiento especial: NLP (análisis de sentimientos, extracción de entidades) o búsqueda full-text (Elasticsearch, índices full-text en PostgreSQL).',
+   trap:'Una columna TEXT en SQL puede almacenar el texto, pero eso no hace que los datos sean "estructurados" — la estructura se refiere al contenido, no al contenedor. El texto libre sigue siendo no estructurado aunque esté en una tabla SQL.'},
+];
+
+const nodeState={},childState={};
+let activeCompara=0,flashItems=[...FLASH],flashIdx=0,flashFlipped=false,flashFilter='all';
+let qIdx=0,qAnswers=Array(QUESTIONS.length).fill(null),qLocked=Array(QUESTIONS.length).fill(false),quizDone=false;
+
+function showPage(id){
+  ['mapa','compara','flash','quiz'].forEach(p=>document.getElementById('page-'+p).classList.toggle('hidden',p!==id));
+  document.querySelectorAll('.ntab').forEach((t,i)=>t.classList.toggle('active',['mapa','compara','flash','quiz'][i]===id));
+  if(id==='compara')renderCompara();if(id==='flash')renderFlash();if(id==='quiz')renderQuiz();if(id==='mapa')renderMapa();
+  window.scrollTo(0,0);
+}
+function renderMapa(){
+  const pg=document.getElementById('page-mapa');
+  const conn=`<div class="d-conn"><div class="d-conn-line"></div><div class="d-conn-txt">▼</div><div class="d-conn-line"></div></div>`;
+  pg.innerHTML=MAPA.map((node,ni)=>{
+    const open=nodeState[ni]?'open':'';
+    const children=node.items.map((item,ci)=>{
+      const cop=childState[`${ni}-${ci}`]?'open':'';
+      return `<div class="child ${cop}" onclick="toggleChild(${ni},${ci})"><div class="child-head"><div class="child-dot" style="background:${item.dot}"></div><span class="child-name">${item.name}</span><span class="child-tag">${item.tag}</span><span class="child-arrow">▶</span></div><div class="child-body">${item.body}</div></div>`;
+    }).join('');
+    return `<div class="node ${node.cls} ${open}"><div class="node-head" onclick="toggleNode(${ni})"><span class="node-icon">${node.icon}</span><div><div class="node-title">${node.title}</div><div class="node-sub">${node.sub}</div></div><span class="node-arrow">▶</span></div><div class="node-body"><p style="font-size:13px;color:var(--text2);margin-bottom:10px">${node.desc}</p>${children}</div></div>`;
+  }).join(conn);
+}
+function toggleNode(ni){nodeState[ni]=!nodeState[ni];renderMapa();}
+function toggleChild(ni,ci){const k=`${ni}-${ci}`;childState[k]=!childState[k];renderMapa();}
+function renderCompara(){
+  const pg=document.getElementById('page-compara');
+  const c=COMPARA[activeCompara];
+  const tabs=COMPARA.map((cc,i)=>`<button class="ctab ${i===activeCompara?'active':''}" onclick="setCompara(${i})">${cc.label}</button>`).join('');
+  const ths=c.cols.map(h=>`<th>${h}</th>`).join('');
+  const rows=c.rows.map(r=>`<tr><td>${r[0]}</td>${r.slice(1).map(v=>`<td>${v}</td>`).join('')}</tr>`).join('');
+  pg.innerHTML=`<div class="comp-tabs">${tabs}</div><div class="comp-wrap"><table><thead><tr><th></th>${ths}</tr></thead><tbody>${rows}</tbody></table></div>`;
+}
+function setCompara(i){activeCompara=i;renderCompara();}
+function getFlashItems(){return flashFilter==='all'?FLASH:FLASH.filter(f=>f.cat===flashFilter);}
+function renderFlash(){
+  const pg=document.getElementById('page-flash');
+  flashItems=getFlashItems();if(flashIdx>=flashItems.length)flashIdx=0;
+  const item=flashItems[flashIdx];
+  const cats=[...new Set(FLASH.map(f=>f.cat))];
+  const filterBtns=['all',...cats].map(c=>`<button class="ff-btn ${flashFilter===c?'active':''}" onclick="setFlashFilter('${c}')">${c==='all'?'Todas':c}</button>`).join('');
+  const dots=flashItems.map((_,i)=>`<div class="fp-dot ${i<flashIdx?'done':i===flashIdx?'cur':''}"></div>`).join('');
+  const inner=flashFlipped?`<div class="flash-ans"><div class="ans-title">${item.a}</div><div class="ans-body">${item.body}</div><div class="ans-key">🔑 ${item.key}</div></div>`:`<div><div class="flash-emoji">${item.emoji}</div><div class="flash-q">${item.q}</div></div>`;
+  pg.innerHTML=`<div class="flash-filter">${filterBtns}</div><div class="flash-wrap"><div class="flash-progress">${dots}</div><span class="flash-cat" style="background:${item.bg};color:${item.color}">${item.cat}</span><div class="flash-card" onclick="flipFlash()">${inner}</div><div class="flash-nav"><button class="btn btn-ghost" ${flashIdx===0?'disabled':''} onclick="moveFlash(-1)">←</button><span class="flash-ctr">${flashIdx+1} / ${flashItems.length}</span><button class="btn btn-primary" onclick="moveFlash(1)">${flashIdx===flashItems.length-1?'Reiniciar':'Siguiente →'}</button></div></div>`;
+}
+function flipFlash(){flashFlipped=!flashFlipped;renderFlash();}
+function moveFlash(d){flashFlipped=false;flashIdx=(flashIdx+d+flashItems.length)%flashItems.length;renderFlash();}
+function setFlashFilter(cat){flashFilter=cat;flashIdx=0;flashFlipped=false;renderFlash();}
+function renderQuiz(){
+  const pg=document.getElementById('page-quiz');
+  if(quizDone){pg.innerHTML=renderResults();return;}
+  const q=QUESTIONS[qIdx];
+  const prog=Math.round(qIdx/QUESTIONS.length*100);
+  const letters=['A','B','C','D'];
+  const parts=q.q.split('\n\n');
+  let qHtml='';
+  if(parts.length>=3){
+    qHtml=`<div class="qtxt">${parts[0]}</div><div class="qcode">${parts.slice(1,parts.length-1).join('\n\n').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div><div class="qtxt">${parts[parts.length-1]}</div>`;
+  } else if(parts.length===2){
+    const hasCode=parts[0].includes('\n')&&(parts[0].includes('SELECT')||parts[0].includes('UPDATE')||parts[0].includes('BEGIN')||parts[0].includes('FROM')||parts[0].includes('WHERE'));
+    qHtml=hasCode?`<div class="qcode">${parts[0].replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div><div class="qtxt">${parts[1]}</div>`:`<div class="qtxt">${parts[0]}</div><div class="qtxt">${parts[1]}</div>`;
+  } else {
+    qHtml=`<div class="qtxt">${q.q}</div>`;
+  }
+  const opts=q.opts.map((o,i)=>{
+    let cls='opt';
+    if(qLocked[qIdx]){cls+=' locked';if(i===q.ans)cls+=' correct';else if(i===qAnswers[qIdx]&&i!==q.ans)cls+=' wrong';else cls+=' dimmed';}
+    return `<button class="${cls}" onclick="qAnswer(${i})"><span class="letter">${letters[i]}</span><span>${o}</span></button>`;
+  }).join('');
+  const fb=qLocked[qIdx]?`<div class="fb ${qAnswers[qIdx]===q.ans?'ok':'no'}"><div class="fb-tag">${qAnswers[qIdx]===q.ans?'✓ CORRECTO':'✗ INCORRECTO'}</div><div class="fb-text">${q.exp}</div><div class="fb-trap"><div class="trap-tag">⚠ TRAMPA</div><p>${q.trap}</p></div></div>`:'';
+  const dots=QUESTIONS.map((_,i)=>{
+    const a=qAnswers[i];const ic=a===QUESTIONS[i].ans;const iw=a!==null&&!ic;
+    const bg=i===qIdx?'var(--teal)':ic?'var(--green)':iw?'var(--red)':'var(--card2)';
+    const bd=i===qIdx?'var(--teal)':ic?'var(--green2)':iw?'var(--red2)':'var(--border)';
+    const col=(i===qIdx||a!==null)?'#fff':'var(--text2)';
+    return `<button class="qdot" onclick="goQ(${i})" style="background:${bg};border-color:${bd};color:${col}">${i+1}</button>`;
+  }).join('');
+  pg.innerHTML=`<div class="pbar"><div class="label">${qIdx+1}/${QUESTIONS.length}</div><div class="track"><div class="fill" style="width:${prog}%"></div></div><div class="label">${prog}%</div></div><div class="qcard"><div class="qnum">PREGUNTA ${qIdx+1}</div><span class="qtag ${q.cat}">${q.catL}</span>${qHtml}<div class="opts">${opts}</div>${fb}${qLocked[qIdx]?`<div class="nav">${qIdx>0?`<button class="btn btn-ghost" onclick="goQ(${qIdx-1})">← Anterior</button>`:''} ${qIdx<QUESTIONS.length-1?`<button class="btn btn-primary" onclick="goQ(${qIdx+1})">Siguiente →</button>`:`<button class="btn btn-primary" onclick="finishQuiz()">Ver resultados</button>`}</div>`:''}<div class="qdots">${dots}</div></div>`;
+}
+function qAnswer(i){if(qLocked[qIdx])return;qAnswers[qIdx]=i;qLocked[qIdx]=true;renderQuiz();}
+function goQ(i){qIdx=i;renderQuiz();window.scrollTo(0,0);}
+function finishQuiz(){quizDone=true;renderQuiz();}
+function renderResults(){
+  const total=QUESTIONS.length,correct=qAnswers.filter((a,i)=>a===QUESTIONS[i].ans).length,pct=Math.round(correct/total*100);
+  const cls=pct>=80?'score-ok':pct>=60?'score-mid':'score-bad';
+  const cats=[{id:'sql',label:'SQL',color:'#2563eb'},{id:'acid',label:'ACID y Transacciones',color:'#7c3aed'},{id:'tipos',label:'Tipos de datos',color:'#ea580c'},{id:'nosql',label:'NoSQL',color:'#0d9488'},{id:'dist',label:'Fragmentación y Replicación',color:'#db2777'}];
+  const catRows=cats.map(cat=>{
+    const qs=QUESTIONS.filter(q=>q.cat===cat.id);if(!qs.length)return'';
+    const c=qs.filter(q=>{const idx=QUESTIONS.indexOf(q);return qAnswers[idx]===q.ans;}).length;
+    const p=Math.round(c/qs.length*100);
+    return `<div class="cat-row"><span class="cat-name">${cat.label}</span><div class="cat-track"><div class="cat-fill" style="width:${p}%;background:${cat.color}"></div></div><span class="cat-val">${c}/${qs.length}</span></div>`;
+  }).join('');
+  return `<div class="results"><h2>Resultado final</h2><div class="score-big ${cls}">${correct}/${total}</div><div style="font-size:14px;color:var(--text2);margin-bottom:16px">${pct}% · Gestión de Datos</div><div class="cat-scores">${catRows}</div><div class="nav" style="margin-top:20px"><button class="btn btn-primary" onclick="resetQuiz()">🔄 Reintentar</button><button class="btn btn-ghost" onclick="showPage('mapa')">🗺️ Ver mapa</button><button class="btn btn-ghost" onclick="showPage('flash')">🃏 Flashcards</button></div></div>`;
+}
+function resetQuiz(){qIdx=0;qAnswers=Array(QUESTIONS.length).fill(null);qLocked=Array(QUESTIONS.length).fill(false);quizDone=false;renderQuiz();}
+function toggleTheme(){
+  const dark=document.body.classList.toggle('dark');
+  document.getElementById('theme-btn').textContent=dark?'☀️':'🌙';
+  localStorage.setItem('theme',dark?'dark':'light');
+}
+document.addEventListener('DOMContentLoaded',()=>{
+  if(localStorage.getItem('theme')==='dark'){document.body.classList.add('dark');document.getElementById('theme-btn').textContent='☀️';}
+  renderMapa();
+});
+</script>
+</body>
+</html>
